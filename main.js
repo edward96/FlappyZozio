@@ -17,12 +17,13 @@ var secondsBetweenTubes = 2;
 function preload(){
   game.load.image('bottom', 'bottom.png');
   game.load.image('top', 'top.png');
+  game.load.image('flappy', 'flappy.png');
 }
 
 function create(){
   game.stage.backgroundColor = '#ff00ff';
 
-  player = game.add.sprite(0,0,'player');
+  player = game.add.sprite(0,0,'flappy');
 
   game.time.events.loop(Phaser.Timer.SECOND * secondsBetweenTubes, createTube, this);
 }
