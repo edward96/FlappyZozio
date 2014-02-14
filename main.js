@@ -10,10 +10,11 @@ var tube;
 var tubeHeight = 250;
 var tubeTab = [];
 
-var jumpDuration = 30;
-var initialThrust = 15;
+/* MAGIC VALUES ALMOST VERY GOOD FEELING */
+var jumpDuration = 38;
+var initialThrust = 13;
 var spaceBetweenTubes = 50;
-var secondsBetweenTubes = 3;
+var secondsBetweenTubes = 2.5;
 
 var layer;
 
@@ -25,7 +26,7 @@ function preload(){
 }
 
 function create(){
-  game.stage.backgroundColor = '#ff00ff';
+  game.stage.backgroundColor = '#53bece';
 
   player = game.add.sprite(50,0,'flappy');
   tilesprite = game.add.tileSprite(0, game.height - 50, game.width, 50, 'tile');
@@ -36,11 +37,12 @@ function create(){
   layer.add(tilesprite);
 
   game.time.events.loop(Phaser.Timer.SECOND * secondsBetweenTubes / 2, createTube, this);
+  game.time.events.loop(Phaser.Timer.SECOND * secondsBetweenTubes / 2, removeTubes, this);
 }
 
 function update(){
   tilesprite.tilePosition.x -= game.width * game.time.elapsed / ( 1000 * secondsBetweenTubes ) ;
-  // gravity += 0.1;
+  gravity += 0.05;
 
   if(velocity > 0){
     // duration of the parabole higher = longer
@@ -62,7 +64,7 @@ function update(){
 
 document.onclick = function(){
   velocity = initialThrust;
-  // gravity = 5;
+  gravity = 5;
   // player.rotation = -0.5;
   // player.anchor.setTo(1, 0);
   // console.log(player.body.rotation);
@@ -86,4 +88,8 @@ function createTube(){
 
   tubeTab.push(tube1);
   tubeTab.push(tube2);
+}
+
+function removeTubes(){
+  
 }
