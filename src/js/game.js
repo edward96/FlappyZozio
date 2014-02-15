@@ -14,14 +14,13 @@
     /* MAGIC VALUES ALMOST VERY GOOD FEELING */
     this.jumpDuration = 38;
     this.initialThrust = 13;
-    this.spaceBetweenTubes = 50;
+    this.spaceBetweenTubes = 55;
     this.secondsBetweenTubes = 2.5;
 
     this.frontLayer = null;
     this.tubeLayer = null;
     this.collision = null;
 
-    this.overlay = document.getElementById('overlay');
     this.firstFrameTouched = false;
     this.paused = false;
 
@@ -31,20 +30,22 @@
     this.btnsLayer = null;
 
     this.timerEvents = [];
+    this.scoreTxt = null;
+    this.scoreCounter = 0;
   }
 
   Game.prototype = {
 
     create: function () {
       this.stage.backgroundColor = '#53bece';
+      this.gravity = 5;
+      this.scoreTxt = this.add.bitmapText(this.game.width / 2, 10, '' + this.scoreCounter, {font: '16px minecraftia', align: 'center'});
 
       this.player = this.add.sprite(50,50,'flappy');
       this.tilesprite = this.add.tileSprite(0, this.game.height - 50, this.game.width, 50, 'tile');
 
       this.btnPlay = this.add.button(34, this.game.height - 132, 'play', this.playGame, this);
-      // this.btnPlay.alpha = 0;
       this.btnScore = this.add.button(160, this.game.height - 132, 'score', this.scoreGame, this);
-      // this.btnScore.alpha = 0;
       this.btnPause = this.add.button(10, 10, 'pause', this.pauseGame, this);
 
       this.tubeLayer = this.add.group();
@@ -52,6 +53,7 @@
       this.frontLayer = this.add.group();
       
       this.frontLayer.add(this.tilesprite);
+      this.frontLayer.add(this.scoreTxt);
       this.frontLayer.add(this.player);
 
       this.btnsLayer.add(this.btnPlay);
@@ -66,7 +68,7 @@
 
     update: function () {
       if(this.firstFrameTouched){
-        this.overlay.style.display = 'none';
+        // this.overlay.style.display = 'none';
       }
 
       this.gravity += 0.05;
@@ -77,7 +79,6 @@
         this.velocity = 0;
       }
 
-
       if(!this.collision){
         for (var i = 0, il = this.tubeTab.length; i < il; i++) {
           this.tubeTab[i].body.x -= this.game.width * this.time.elapsed / ( 1000 * this.secondsBetweenTubes );
@@ -85,8 +86,9 @@
         this.tilesprite.tilePosition.x -= this.game.width * this.time.elapsed / ( 1000 * this.secondsBetweenTubes );
       }
 
-      this.frontLayer.bringToTop(this.tilesprite);
       this.frontLayer.bringToTop(this.player);
+      this.frontLayer.bringToTop(this.tilesprite);
+      this.frontLayer.bringToTop(this.scoreTxt);
 
       this.physics.overlap(this.player, this.tubeLayer, this.endGame, null, this);
 
@@ -144,21 +146,24 @@
       this.tubeTab = [];
       this.tubeLayer = this.game.add.group();
 
-
       this.collision = false;
       this.firstFrameTouched = false;
 
       // this.btnPlay.kill();
       // this.btnScore.kill();
-      console.log(this.tubeTab, this.tubeLayer);
       this.game.state.start('game');
+    },
+
+    addScore: function(){
+      this.scoreCounter++;
+      this.scoreTxt.setText('' + this.scoreCounter);
     },
 
     scoreGame: function(){
     },
 
     pauseGame: function(){
-      this.paused = (this.paused) ? false : true ;
+      this.game.paused = (this.paused) ? false : true ;
     },
 
     fadeButtons: function(){
@@ -167,16 +172,16 @@
     },
 
     endGame: function(){
+      this.game.input.onDown.remove(this.onInputDown, this);
       this.game.time.events.remove(this.timerEvents[0]);
       this.game.time.events.remove(this.timerEvents[1]);
 
       if(!this.firstFrameTouched){
-        this.overlay.style.display = 'block';
+        // this.overlay.style.display = 'block';
         this.firstFrameTouched = true;
         this.time.events.add(Phaser.Timer.SECOND / 2, this.fadeButtons, this);
       }
       this.collision = true;
-
     }
 
   };
