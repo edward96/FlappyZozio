@@ -244,11 +244,14 @@
 
     submitEntry: function(){
       document.getElementById('top').style.display = 'none';
-
+      var value = document.getElementById('name').value;
+      if(value === ""){
+        value = 'Anon.';
+      }
       var xhr = new XMLHttpRequest();
       xhr.open('POST', 'post.php', true);
       xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-      xhr.send('name=' + document.getElementById('name').value + '&score=' + this.bestScore);
+      xhr.send('name=' + value + '&score=' + this.bestScore);
     }
 
   };
