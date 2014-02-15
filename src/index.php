@@ -84,6 +84,7 @@ $rows = $stmt->fetchAll(PDO::FETCH_OBJ);
     </div>
     <div id="game"></div>
     <div id="scores">
+      <h2>Scores</h2>
       <ol>
         <?php foreach ($rows as $row): ?>
         <li>
@@ -94,10 +95,6 @@ $rows = $stmt->fetchAll(PDO::FETCH_OBJ);
       </ol>
     </div>
   </div>
-
-  <!-- build:remove -->
-  <script src="http://localhost:35729/livereload.js"></script>  
-  <!-- /build -->
 
   <!-- build:js main.min.js -->
   <script src="js/lib/phaser.js"></script>

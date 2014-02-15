@@ -9,8 +9,4 @@ $stmt->bindParam(':score', $score);
 $name = $_POST['name'];
 $score = intval($_POST['score']);
 $stmt->execute();
-
-header('Content-type: application/json');
-echo json_encode($_POST);
-die;
 ?>

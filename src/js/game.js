@@ -151,7 +151,7 @@
     },
 
     playGame: function(){
-      
+
       document.getElementById('top').style.display = 'none';
       this.btnPlay.kill();
       this.btnScore.kill();
@@ -248,11 +248,6 @@
       var xhr = new XMLHttpRequest();
       xhr.open('POST', 'post.php', true);
       xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-      xhr.onload = function(){
-        if (this.status === 200) {
-          console.log(this);
-        }
-      };
       xhr.send('name=' + document.getElementById('name').value + '&score=' + this.bestScore);
     }
 
