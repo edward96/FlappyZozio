@@ -1,0 +1,13 @@
+flappy bird :
+  ✔ mettre en palce le projet @done (14-02-15 00:07)
+  ✔ faire tomber l'oiseau @done (14-02-15 00:07)
+  ✔ gérer le click @done (14-02-15 00:07)
+  ✔ generer tubes @done (14-02-15 00:52)
+    ✔ Random 2 par 2 @done (14-02-15 00:52)
+  ✔ changer les assets @done (14-02-15 00:52)
+  ✔ faire avancer les tubes @done (14-02-15 02:50)
+  ✔ supprimer du layer + tableau les tubes inutiles avec un event entre deux apparitions @done (14-02-15 18:00)
+  ✔ taille tubes @done (14-02-15 18:00)
+  ✔ collisions @done (14-02-15 18:00)
+  ☐ rotation flappy
+  ☐ score
