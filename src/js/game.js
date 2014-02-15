@@ -36,12 +36,12 @@
     create: function () {
       this.stage.backgroundColor = '#53bece';
 
-      this.player = this.add.sprite(50,0,'flappy');
-      this.tilesprite = this.add.tileSprite(0, this.height - 50, this.width, 50, 'tile');
+      this.player = this.add.sprite(50,50,'flappy');
+      this.tilesprite = this.add.tileSprite(0, this.game.height - 50, this.game.width, 50, 'tile');
 
-      this.btnPlay = this.add.button(34, this.height - 132, 'play', this.playthis, this);
+      this.btnPlay = this.add.button(34, this.game.height - 132, 'play', this.playthis, this);
       this.btnPlay.alpha = 0;
-      this.btnScore = this.add.button(160, this.height - 132, 'score', this.scorethis, this);
+      this.btnScore = this.add.button(160, this.game.height - 132, 'score', this.scorethis, this);
       this.btnScore.alpha = 0;
       this.btnPause = this.add.button(10, 10, 'pause', this.pausethis, this);
 
@@ -56,8 +56,10 @@
       this.btnsLayer.add(this.btnScore);
       this.btnsLayer.add(this.btnPause);
 
-      this.game.time.events.loop(Phaser.Timer.SECOND * this.secondsBetweenTubes / 2, this.createTube, this.game);
-      this.game.time.events.loop(Phaser.Timer.SECOND, this.removeTubes, this.game);
+      this.game.time.events.loop(Phaser.Timer.SECOND * this.secondsBetweenTubes / 2, this.createTube, this);
+      this.game.time.events.loop(Phaser.Timer.SECOND, this.removeTubes, this);
+
+      this.input.onDown.add(this.onInputDown, this);
     },
 
     update: function () {
@@ -76,9 +78,9 @@
 
       if(!this.collision){
         for (var i = 0, il = this.tubeTab.length; i < il; i++) {
-          this.tubeTab[i].body.x -= this.width * this.time.elapsed / ( 1000 * this.secondsBetweenTubes );
+          this.tubeTab[i].body.x -= this.game.width * this.time.elapsed / ( 1000 * this.secondsBetweenTubes );
         }
-        this.tilesprite.tilePosition.x -= this.width * this.time.elapsed / ( 1000 * this.secondsBetweenTubes );
+        this.tilesprite.tilePosition.x -= this.game.width * this.time.elapsed / ( 1000 * this.secondsBetweenTubes );
       }
 
       this.frontLayer.bringToTop(this.tilesprite);
@@ -86,7 +88,7 @@
 
       this.physics.overlap(this.player, this.tubeLayer, this.endGame, null, this);
 
-      if(this.player.body.y + this.player.body.height >= this.height - 52){
+      if(this.player.body.y + this.player.body.height >= this.game.height - 52){
         this.endGame();
       }else{
         this.player.body.y += this.gravity - this.velocity;
@@ -107,8 +109,8 @@
           maxPlacement = 300,
           placement = Math.floor( Math.random() * ( maxPlacement - minPlacement )  ) + minPlacement;
 
-      var tube1 = this.add.sprite(this.width, placement + this.spaceBetweenTubes, 'bottom');
-      var tube2 = this.add.sprite(this.width, placement - this.spaceBetweenTubes - this.tubeHeight, 'top');
+      var tube1 = this.add.sprite(this.game.width, placement + this.spaceBetweenTubes, 'bottom');
+      var tube2 = this.add.sprite(this.game.width, placement - this.spaceBetweenTubes - this.tubeHeight, 'top');
 
       this.tubeLayer.add(tube1);
       this.tubeLayer.add(tube2);

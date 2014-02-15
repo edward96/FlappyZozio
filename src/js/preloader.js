@@ -14,17 +14,16 @@
 
       this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
       this.load.setPreloadSprite(this.asset);
-      this.load.image('player', 'assets/player.png');
       this.load.bitmapFont('minecraftia', 'assets/minecraftia.png', 'assets/minecraftia.xml');
 
-      this.load.image('bottom', 'assets/bottom.png');
-      this.load.image('top', 'assets/top.png');
-      this.load.image('flappy', 'assets/flappy.png');
-      this.load.image('tile', 'assets/tile.jpg');
+      this.load.image('bottom', '/assets/bottom.png');
+      this.load.image('top', '/assets/top.png');
+      this.load.image('flappy', '/assets/flappy.png');
+      this.load.image('tile', '/assets/tile.jpg');
 
-      this.load.image('play', 'assets/play.png');
-      this.load.image('score', 'assets/score.png');
-      this.load.image('pause', 'assets/pause.jpg');
+      this.load.image('play', '/assets/play.png');
+      this.load.image('score', '/assets/score.png');
+      this.load.image('pause', '/assets/pause.jpg');
     },
 
     create: function () {
