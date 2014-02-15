@@ -36,6 +36,9 @@
     this.bestScore = 0;
     this.bestScoreTxt = 0;
     this.finalResult = null;
+    this.ended = false;
+
+    this.soundHurtPlayed = false;
   }
 
   Game.prototype = {
@@ -43,7 +46,7 @@
     create: function () {
       this.stage.backgroundColor = '#53bece';
       this.gravity = 5;
-      this.scoreTxt = this.add.bitmapText(this.game.width / 2, 10, '' + this.scoreCounter, {font: '16px minecraftia', align: 'center'});
+      this.scoreTxt = this.add.bitmapText(this.game.width / 2, 10, '' + this.scoreCounter, {font: '20px minecraftia', align: 'center'});
 
       this.player = this.add.sprite(50,50,'flappy');
       this.tilesprite = this.add.tileSprite(0, this.game.height - 50, this.game.width, 50, 'tile');
@@ -100,7 +103,9 @@
       this.frontLayer.bringToTop(this.scoreTxt);
 
       this.physics.overlap(this.player, this.tubeLayer, this.endGame, null, this);
-
+      if(this.player.body.y <= 0){
+        this.player.body.y = 1;
+      }
       if(this.player.body.y + this.player.body.height >= this.game.height - 52){
         this.endGame();
       }else{
@@ -111,6 +116,7 @@
     onInputDown: function () {
       this.velocity = this.initialThrust;
       this.gravity = 5;
+      this.game.sound.play('flap');
     },
 
     createTube: function(){
@@ -161,15 +167,19 @@
 
       this.collision = false;
       this.firstFrameTouched = false;
+      this.soundHurtPlayed = false;
+      this.scoreCounter = 0;
 
       // this.btnPlay.kill();
       // this.btnScore.kill();
+      this.ended = false;
       this.game.state.start('game');
     },
 
     addScore: function(){
       this.scoreCounter++;
       this.scoreTxt.setText('' + this.scoreCounter);
+      this.game.sound.play('coin');
     },
 
     scoreGame: function(){
@@ -185,41 +195,66 @@
       this.add.tween(this.finalResult).to( { alpha: 1 }, 200, Phaser.Easing.Linear.None, true);
 
       this.add.tween(this.scoreTxt).to( {  x : this.game.width / 2 - 55, y: this.game.height / 2}, 200, Phaser.Easing.Linear.None, true);
-      this.bestScoreTxt = this.add.bitmapText(this.game.width / 2 + 35, this.game.height / 2, '' + this.bestScore, {font: '16px minecraftia', align: 'center'});
+      this.bestScoreTxt = this.add.bitmapText(this.game.width / 2 + 35, this.game.height / 2, '' + this.bestScore, {font: '20px minecraftia', align: 'center'});
 
       this.frontLayer.add(this.bestScoreTxt);
     },
 
     endGame: function(){
-      if(this.scoreCounter > this.bestScore){
-        this.bestScore = this.scoreCounter;
+      if(!this.ended){
+        this.ended = true;
+        if(!this.soundHurtPlayed){
+          this.game.sound.play('collision_hurt');
+          this.soundHurtPlayed = true;
+        }
+        if(this.scoreCounter > this.bestScore){
+          this.bestScore = this.scoreCounter;
+          this.createEntry();
+        }
+        this.game.input.onDown.remove(this.onInputDown, this);
+
+        this.btnPlay = this.add.button(34, this.game.height - 132, 'play', this.playGame, this);
+        this.btnPlay.alpha = 0;
+        this.btnScore = this.add.button(160, this.game.height - 132, 'score', this.scoreGame, this);
+        this.btnScore.alpha = 0;
+        this.finalResult = this.add.sprite(this.game.width / 2 - 110, this.game.height / 2 - 50, 'finalResult');
+        this.finalResult.alpha = 0;
+
+        this.btnsLayer.add(this.btnPlay);
+        this.btnsLayer.add(this.btnScore);
+        this.btnsLayer.add(this.finalResult);
+
+        this.game.time.events.remove(this.timerEvents[0]);
+        this.game.time.events.remove(this.timerEvents[1]);
+
+        if(!this.firstFrameTouched){
+          // this.overlay.style.display = 'block';
+          this.firstFrameTouched = true;
+          this.time.events.add(Phaser.Timer.SECOND / 2, this.fadeButtons, this);
+        }
+        this.collision = true;
       }
-      this.game.input.onDown.remove(this.onInputDown, this);
+    },
 
-      this.btnPlay = this.add.button(34, this.game.height - 132, 'play', this.playGame, this);
-      this.btnPlay.alpha = 0;
-      this.btnScore = this.add.button(160, this.game.height - 132, 'score', this.scoreGame, this);
-      this.btnScore.alpha = 0;
-      this.finalResult = this.add.sprite(this.game.width / 2 - 110, this.game.height / 2 - 50, 'finalResult');
-      this.finalResult.alpha = 0;
+    createEntry: function(){
+      document.getElementById('top').style.display = 'block';
+      document.getElementById('submitEntry').onclick = this.submitEntry.bind(this);
+    },
 
-      this.btnsLayer.add(this.btnPlay);
-      this.btnsLayer.add(this.btnScore);
-      this.btnsLayer.add(this.finalResult);
-
-      this.game.time.events.remove(this.timerEvents[0]);
-      this.game.time.events.remove(this.timerEvents[1]);
-
-      if(!this.firstFrameTouched){
-        // this.overlay.style.display = 'block';
-        this.firstFrameTouched = true;
-        this.time.events.add(Phaser.Timer.SECOND / 2, this.fadeButtons, this);
-      }
-      this.collision = true;
+    submitEntry: function(){
+      console.log(this.bestScore);
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/flappyZozio/', true);
+      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      xhr.onload = function(){
+        if (this.status === 200) {
+          console.log(this);
+        }
+      };
+      xhr.send('name=' + document.getElementById('name').value + '&score=' + this.bestScore);
     }
 
   };
-
   window[''] = window[''] || {};
   window[''].Game = Game;
 

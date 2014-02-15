@@ -8,20 +8,60 @@
       position: relative;
     }
 
-    #overlay {
-      width: 320px;
-      height: 480px;
-      background: white;
-      position: absolute;
-      top: 0;
+    #top {
       display: none;
+      position: absolute;
+      top: 10px;
+      left: 20px;
+      width: 250px;
+      background: #e9e18e;
+      border: 2px solid #453939;
+      padding: 4px;
+    }
+
+    .top-inside {
+      padding: 10px;
+    }
+
+    label {
+      display: block;
+      width: 100%;
+      text-align: center;
+    }
+
+    input {
+      display: block;
+      border: 2px solid #deb357;
+      border-top: none;
+      background: none;
+      width: 100%;
+    }
+
+    a {
+      text-decoration: none;
+      background: #deb357;
+      display: block;
+      text-align: center;
+      width: 50%;
+      color: #444;
+      padding: 5px;
+      border: 2px solid #453939;
+      margin: 15px auto;
     }
   </style>
 </head>
 
 <body>
   
-  <div id="wrapper"></div>
+  <div id="wrapper">
+    <div id="top">
+      <div class="top-inside">
+        <label for="name">Your name :</label>
+        <input type="text" name="name" id="name" />
+      </div>
+      <a href="#" id="submitEntry">Submit</a>
+    </div>
+  </div>
 
   <!-- build:remove -->
   <script src="http://localhost:35729/livereload.js"></script>  
@@ -35,7 +75,6 @@
   <script src="js/game.js"></script>
   <script src="js/main.js"></script>
   <!-- /build -->
-
 </body>
 </html>
 
