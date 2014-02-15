@@ -37,7 +37,7 @@ function create(){
   layer.add(tilesprite);
 
   game.time.events.loop(Phaser.Timer.SECOND * secondsBetweenTubes / 2, createTube, this);
-  game.time.events.loop(Phaser.Timer.SECOND * secondsBetweenTubes / 2, removeTubes, this);
+  game.time.events.loop(Phaser.Timer.SECOND, removeTubes, this);
 }
 
 function update(){
@@ -58,7 +58,6 @@ function update(){
   }
 
   layer.bringToTop(tilesprite);
-  // console.log(player.body.y);
   // player.body.gravity.y += gravity;
 }
 
@@ -91,5 +90,16 @@ function createTube(){
 }
 
 function removeTubes(){
-  
+  if(tubeTab.length){
+    if(tubeTab[0].body.x < -54 ){
+      tubeTab[0].kill();
+      layer.remove(tubeTab[0]);
+      tubeTab.splice(0, 1);
+    }
+    if(tubeTab[1].body.x < -54){
+      tubeTab[1].kill();
+      layer.remove(tubeTab[1]);
+      tubeTab.splice(1, 1);
+    }
+  }
 }
