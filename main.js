@@ -46,11 +46,11 @@ function create(){
   player = game.add.sprite(50,0,'flappy');
   tilesprite = game.add.tileSprite(0, game.height - 50, game.width, 50, 'tile');
 
-  btnPlay = game.add.button(34, game.height - 132, 'play', btnPlay, this);
+  btnPlay = game.add.button(34, game.height - 132, 'play', playGame, this);
   btnPlay.alpha = 0;
-  btnScore = game.add.button(160, game.height - 132, 'score', btnScore, this);
+  btnScore = game.add.button(160, game.height - 132, 'score', scoreGame, this);
   btnScore.alpha = 0;
-  btnPause = game.add.button(10, 10, 'pause', btnPause, this);
+  btnPause = game.add.button(10, 10, 'pause', pauseGame, this);
 
   tubeLayer = game.add.group();
   btnsLayer = game.add.group();
@@ -140,7 +140,7 @@ function removeTubes(){
   }
 }
 
-function btnPause(){
+function pauseGame(){
   game.paused = (paused) ? false : true ;
 }
 
@@ -157,4 +157,12 @@ function endGame(){
   }
   collision = true;
 
+}
+
+function playGame(){
+
+}
+
+function scoreGame(){
+  
 }
