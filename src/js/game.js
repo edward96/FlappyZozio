@@ -33,6 +33,9 @@
     this.timerEvents = [];
     this.scoreTxt = null;
     this.scoreCounter = 0;
+    this.bestScore = 0;
+    this.bestScoreTxt = 0;
+    this.finalResult = null;
   }
 
   Game.prototype = {
@@ -179,18 +182,30 @@
     fadeButtons: function(){
       this.add.tween(this.btnPlay).to( { alpha: 1 }, 200, Phaser.Easing.Linear.None, true);
       this.add.tween(this.btnScore).to( { alpha: 1 }, 200, Phaser.Easing.Linear.None, true);
+      this.add.tween(this.finalResult).to( { alpha: 1 }, 200, Phaser.Easing.Linear.None, true);
+
+      this.add.tween(this.scoreTxt).to( {  x : this.game.width / 2 - 55, y: this.game.height / 2}, 200, Phaser.Easing.Linear.None, true);
+      this.bestScoreTxt = this.add.bitmapText(this.game.width / 2 + 35, this.game.height / 2, '' + this.bestScore, {font: '16px minecraftia', align: 'center'});
+
+      this.frontLayer.add(this.bestScoreTxt);
     },
 
     endGame: function(){
+      if(this.scoreCounter > this.bestScore){
+        this.bestScore = this.scoreCounter;
+      }
       this.game.input.onDown.remove(this.onInputDown, this);
 
       this.btnPlay = this.add.button(34, this.game.height - 132, 'play', this.playGame, this);
       this.btnPlay.alpha = 0;
       this.btnScore = this.add.button(160, this.game.height - 132, 'score', this.scoreGame, this);
       this.btnScore.alpha = 0;
+      this.finalResult = this.add.sprite(this.game.width / 2 - 110, this.game.height / 2 - 50, 'finalResult');
+      this.finalResult.alpha = 0;
 
       this.btnsLayer.add(this.btnPlay);
       this.btnsLayer.add(this.btnScore);
+      this.btnsLayer.add(this.finalResult);
 
       this.game.time.events.remove(this.timerEvents[0]);
       this.game.time.events.remove(this.timerEvents[1]);
