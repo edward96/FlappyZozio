@@ -29,6 +29,8 @@
     this.btnScore = null;
     this.btnPause = null;
     this.btnsLayer = null;
+
+    this.timerEvents = [];
   }
 
   Game.prototype = {
@@ -39,11 +41,11 @@
       this.player = this.add.sprite(50,50,'flappy');
       this.tilesprite = this.add.tileSprite(0, this.game.height - 50, this.game.width, 50, 'tile');
 
-      this.btnPlay = this.add.button(34, this.game.height - 132, 'play', this.playthis, this);
-      this.btnPlay.alpha = 0;
-      this.btnScore = this.add.button(160, this.game.height - 132, 'score', this.scorethis, this);
-      this.btnScore.alpha = 0;
-      this.btnPause = this.add.button(10, 10, 'pause', this.pausethis, this);
+      this.btnPlay = this.add.button(34, this.game.height - 132, 'play', this.playGame, this);
+      // this.btnPlay.alpha = 0;
+      this.btnScore = this.add.button(160, this.game.height - 132, 'score', this.scoreGame, this);
+      // this.btnScore.alpha = 0;
+      this.btnPause = this.add.button(10, 10, 'pause', this.pauseGame, this);
 
       this.tubeLayer = this.add.group();
       this.btnsLayer = this.add.group();
@@ -56,8 +58,8 @@
       this.btnsLayer.add(this.btnScore);
       this.btnsLayer.add(this.btnPause);
 
-      this.game.time.events.loop(Phaser.Timer.SECOND * this.secondsBetweenTubes / 2, this.createTube, this);
-      this.game.time.events.loop(Phaser.Timer.SECOND, this.removeTubes, this);
+      this.timerEvents[0] = this.game.time.events.loop(Phaser.Timer.SECOND * this.secondsBetweenTubes / 2, this.createTube, this);
+      this.timerEvents[1] = this.game.time.events.loop(Phaser.Timer.SECOND, this.removeTubes, this);
 
       this.input.onDown.add(this.onInputDown, this);
     },
@@ -97,8 +99,7 @@
 
     onInputDown: function () {
       this.velocity = this.initialThrust;
-      this.gravity = 5;
-      console.log(this);
+        this.gravity = 5;
       // this.player.rotation = -0.5;
       // this.player.anchor.setTo(1, 0);
       // console.log(this.player.body.rotation);
@@ -134,11 +135,23 @@
       }
     },
 
-    onClickTap: function(){
-      
-    },
-
     playGame: function(){
+      for (var i = 0, il = this.tubeTab.length; i < il; i++) {
+        this.tubeTab[i].kill();
+        this.tubeLayer.remove(this.tubeTab[i]);
+      }
+
+      this.tubeTab = [];
+      this.tubeLayer = this.game.add.group();
+
+
+      this.collision = false;
+      this.firstFrameTouched = false;
+
+      // this.btnPlay.kill();
+      // this.btnScore.kill();
+      console.log(this.tubeTab, this.tubeLayer);
+      this.game.state.start('game');
     },
 
     scoreGame: function(){
@@ -154,6 +167,9 @@
     },
 
     endGame: function(){
+      this.game.time.events.remove(this.timerEvents[0]);
+      this.game.time.events.remove(this.timerEvents[1]);
+
       if(!this.firstFrameTouched){
         this.overlay.style.display = 'block';
         this.firstFrameTouched = true;
