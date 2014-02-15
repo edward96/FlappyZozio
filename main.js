@@ -47,11 +47,11 @@ Game.prototype = {
     this.player = game.add.sprite(50,0,'flappy');
     this.tilesprite = game.add.tileSprite(0, game.height - 50, game.width, 50, 'tile');
 
-    this.btnPlay = game.add.button(34, game.height - 132, 'play', this.btnPlay, gameState);
+    this.btnPlay = game.add.button(34, game.height - 132, 'play', this.playGame, this);
     this.btnPlay.alpha = 0;
-    this.btnScore = game.add.button(160, game.height - 132, 'score', this.btnScore, gameState);
+    this.btnScore = game.add.button(160, game.height - 132, 'score', this.scoreGame, this);
     this.btnScore.alpha = 0;
-    this.btnPause = game.add.button(10, 10, 'pause', this.btnPause, this);
+    this.btnPause = game.add.button(10, 10, 'pause', this.pauseGame, this);
 
     this.tubeLayer = game.add.group();
     this.btnsLayer = game.add.group();
@@ -60,9 +60,9 @@ Game.prototype = {
     this.frontLayer.add(this.tilesprite);
     this.frontLayer.add(this.player);
 
-    this.btnsLayer.add(this.playGame);
-    // this.btnsLayer.add(this.scoreGame);
-    // this.btnsLayer.add(this.pauseGame);
+    // this.btnsLayer.add(this.btnPlay);
+    // this.btnsLayer.add(this.btnScore);
+    // this.btnsLayer.add(this.btnPause);
 
     game.time.events.loop(Phaser.Timer.SECOND * this.secondsBetweenTubes / 2, this.createTube, this);
     game.time.events.loop(Phaser.Timer.SECOND, this.removeTubes, this);
@@ -140,6 +140,11 @@ Game.prototype = {
     // console.log(this.player.body.rotation);
   },
 
+  playGame: function(){
+  },
+
+  scoreGame: function(){
+  },
 
   pauseGame: function(){
     game.paused = (this.paused) ? false : true ;
