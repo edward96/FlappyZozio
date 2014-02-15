@@ -20,6 +20,7 @@
       this.load.image('top', '/assets/top.png');
       this.load.image('flappy', '/assets/flappy.png');
       this.load.image('tile', '/assets/tile.jpg');
+      this.load.image('bg', '/assets/bg.jpg');
 
       this.load.image('play', '/assets/play.png');
       this.load.image('score', '/assets/score.png');

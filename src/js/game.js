@@ -3,6 +3,7 @@
 
   function Game() {
     this.player = null;
+    this.bg = null;
     this.gravity = 5;
     this.velocity = 0;
     this.tilesprite = null;
@@ -43,6 +44,7 @@
 
       this.player = this.add.sprite(50,50,'flappy');
       this.tilesprite = this.add.tileSprite(0, this.game.height - 50, this.game.width, 50, 'tile');
+      this.bg = this.add.sprite(0, this.game.height - 50 - 100, 'bg');
 
       this.btnPlay = this.add.button(34, this.game.height - 132, 'play', this.playGame, this);
       this.btnScore = this.add.button(160, this.game.height - 132, 'score', this.scoreGame, this);
@@ -101,10 +103,7 @@
 
     onInputDown: function () {
       this.velocity = this.initialThrust;
-        this.gravity = 5;
-      // this.player.rotation = -0.5;
-      // this.player.anchor.setTo(1, 0);
-      // console.log(this.player.body.rotation);
+      this.gravity = 5;
     },
 
     createTube: function(){
