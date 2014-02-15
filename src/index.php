@@ -1,4 +1,13 @@
-<!doctype html>
+<?php
+
+include_once 'connexion.php';
+
+$stmt = $pdo->prepare("SELECT * FROM flappyZozio ORDER BY score DESC LIMIT 5 ");
+$stmt->execute();
+
+$rows = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+?><!doctype html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -6,6 +15,18 @@
   <style>
     #wrapper {
       position: relative;
+    }
+
+    #game {
+      float: left;
+    }
+
+    #scores {
+      float: left;
+      border: 2px solid #453939;
+      margin-left: 10px;
+      height: 480px;
+      width: 320px;
     }
 
     #top {
@@ -55,11 +76,22 @@
   
   <div id="wrapper">
     <div id="top">
-      <div class="top-inside">
+      <div id="top-inside">
         <label for="name">Your name :</label>
         <input type="text" name="name" id="name" />
       </div>
       <a href="#" id="submitEntry">Submit</a>
+    </div>
+    <div id="game"></div>
+    <div id="scores">
+      <ol>
+        <?php foreach ($rows as $row): ?>
+        <li>
+          <h3><?php echo $row->name; ?></h3>
+          <p><?php echo $row->score; ?> points</p>
+        </li>
+        <?php endforeach ?>
+      </ol>
     </div>
   </div>
 
@@ -77,4 +109,3 @@
   <!-- /build -->
 </body>
 </html>
-

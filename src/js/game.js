@@ -151,7 +151,8 @@
     },
 
     playGame: function(){
-
+      
+      document.getElementById('top').style.display = 'none';
       this.btnPlay.kill();
       this.btnScore.kill();
 
@@ -242,9 +243,10 @@
     },
 
     submitEntry: function(){
-      console.log(this.bestScore);
+      document.getElementById('top').style.display = 'none';
+
       var xhr = new XMLHttpRequest();
-      xhr.open('POST', '/flappyZozio/', true);
+      xhr.open('POST', 'post.php', true);
       xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
       xhr.onload = function(){
         if (this.status === 200) {
