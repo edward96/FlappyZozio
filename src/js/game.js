@@ -46,8 +46,6 @@
       this.tilesprite = this.add.tileSprite(0, this.game.height - 50, this.game.width, 50, 'tile');
       this.bg = this.add.sprite(0, this.game.height - 50 - 100, 'bg');
 
-      this.btnPlay = this.add.button(34, this.game.height - 132, 'play', this.playGame, this);
-      this.btnScore = this.add.button(160, this.game.height - 132, 'score', this.scoreGame, this);
       this.btnPause = this.add.button(10, 10, 'pause', this.pauseGame, this);
 
       this.tubeLayer = this.add.group();
@@ -58,8 +56,6 @@
       this.frontLayer.add(this.scoreTxt);
       this.frontLayer.add(this.player);
 
-      this.btnsLayer.add(this.btnPlay);
-      this.btnsLayer.add(this.btnScore);
       this.btnsLayer.add(this.btnPause);
 
       this.timerEvents[0] = this.game.time.events.loop(Phaser.Timer.SECOND * this.secondsBetweenTubes / 2, this.createTube, this);
@@ -84,6 +80,14 @@
       if(!this.collision){
         for (var i = 0, il = this.tubeTab.length; i < il; i++) {
           this.tubeTab[i].body.x -= this.game.width * this.time.elapsed / ( 1000 * this.secondsBetweenTubes );
+          if(this.player.body.x > this.tubeTab[i].body.x && this.player.body.x + this.player.body.width <= this.tubeTab[i].body.x + this.tubeTab[i].body.width ){
+            if(this.tubeTab[i].passed !== undefined){
+              if(!this.tubeTab[i].passed){
+                this.addScore();
+                this.tubeTab[i].passed = true;
+              }
+            }
+          }
         }
         this.tilesprite.tilePosition.x -= this.game.width * this.time.elapsed / ( 1000 * this.secondsBetweenTubes );
       }
@@ -112,6 +116,7 @@
           placement = Math.floor( Math.random() * ( maxPlacement - minPlacement )  ) + minPlacement;
 
       var tube1 = this.add.sprite(this.game.width, placement + this.spaceBetweenTubes, 'bottom');
+      tube1.passed = false;
       var tube2 = this.add.sprite(this.game.width, placement - this.spaceBetweenTubes - this.tubeHeight, 'top');
 
       this.tubeLayer.add(tube1);
@@ -137,6 +142,12 @@
     },
 
     playGame: function(){
+
+      this.btnPlay.kill();
+      this.btnScore.kill();
+
+      this.btnsLayer.removeAll();
+
       for (var i = 0, il = this.tubeTab.length; i < il; i++) {
         this.tubeTab[i].kill();
         this.tubeLayer.remove(this.tubeTab[i]);
@@ -166,12 +177,21 @@
     },
 
     fadeButtons: function(){
-      this.add.tween(this.btnPlay).to( { alpha: 1 }, 500, Phaser.Easing.Linear.None, true);
-      this.add.tween(this.btnScore).to( { alpha: 1 }, 500, Phaser.Easing.Linear.None, true);
+      this.add.tween(this.btnPlay).to( { alpha: 1 }, 200, Phaser.Easing.Linear.None, true);
+      this.add.tween(this.btnScore).to( { alpha: 1 }, 200, Phaser.Easing.Linear.None, true);
     },
 
     endGame: function(){
       this.game.input.onDown.remove(this.onInputDown, this);
+
+      this.btnPlay = this.add.button(34, this.game.height - 132, 'play', this.playGame, this);
+      this.btnPlay.alpha = 0;
+      this.btnScore = this.add.button(160, this.game.height - 132, 'score', this.scoreGame, this);
+      this.btnScore.alpha = 0;
+
+      this.btnsLayer.add(this.btnPlay);
+      this.btnsLayer.add(this.btnScore);
+
       this.game.time.events.remove(this.timerEvents[0]);
       this.game.time.events.remove(this.timerEvents[1]);
 
