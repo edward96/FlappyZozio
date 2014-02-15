@@ -102,13 +102,6 @@ function update(){
   }
 }
 
-document.onclick = function(){
-  velocity = initialThrust;
-  gravity = 5;
-  // player.rotation = -0.5;
-  // player.anchor.setTo(1, 0);
-  // console.log(player.body.rotation);
-};
 
 function createTube(){
   var minPlacement = 100,
@@ -150,19 +143,37 @@ function fadeButtons(){
 }
 
 function endGame(){
+  document.onclick = function(){};
   if(!firstFrameTouched){
     overlay.style.display = 'block';
     firstFrameTouched = true;
     game.time.events.add(Phaser.Timer.SECOND / 2, fadeButtons, this);
   }
   collision = true;
-
 }
 
 function playGame(){
+  btnPlay.alpha = 0;
+  btnScore.alpha = 0;
+  tubeTab = [];
+  tubeLayer.removeAll();
+  collision = false;
+  firstFrameTouched = false;
 
+  document.onclick = onclicktap;
+  console.log(player.body.y);
+  player.body.y = 0;
 }
 
 function scoreGame(){
-  
 }
+
+function onclicktap(){
+    velocity = initialThrust;
+    gravity = 5;
+    // player.rotation = -0.5;
+    // player.anchor.setTo(1, 0);
+    // console.log(player.body.rotation);
+}
+
+document.onclick = onclicktap;
