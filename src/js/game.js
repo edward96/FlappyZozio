@@ -237,23 +237,6 @@
       }
     },
 
-    createEntry: function(){
-      document.getElementById('top').style.display = 'block';
-      document.getElementById('submitEntry').onclick = this.submitEntry.bind(this);
-    },
-
-    submitEntry: function(){
-      document.getElementById('top').style.display = 'none';
-      var value = document.getElementById('name').value;
-      if(value === ""){
-        value = 'Anon.';
-      }
-      var xhr = new XMLHttpRequest();
-      xhr.open('POST', 'post.php', true);
-      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-      xhr.send('name=' + value + '&score=' + this.bestScore);
-    }
-
   };
   window[''] = window[''] || {};
   window[''].Game = Game;
