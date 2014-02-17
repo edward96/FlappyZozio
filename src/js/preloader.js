@@ -23,9 +23,10 @@
       this.load.image('finalResult', 'assets/final.jpg');
       this.load.image('bg', 'assets/bg.jpg');
 
-      this.load.image('play', 'assets/play.png');
-      this.load.image('score', 'assets/score.png');
+      this.load.spritesheet('play', 'assets/play.png', 106, 52);
+      this.load.spritesheet('score', 'assets/score.png', 106, 52);
       this.load.image('pause', 'assets/pause.jpg');
+      this.load.spritesheet('submit', 'assets/submit.jpg', 200, 42);
 
       this.load.audio('coin', 'assets/coin.wav');
       this.load.audio('collision_hurt', 'assets/collision_hurt.wav');

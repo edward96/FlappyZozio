@@ -28,6 +28,7 @@
     this.btnPlay = null;
     this.btnScore = null;
     this.btnPause = null;
+    this.btnSubmit = null;
     this.btnsLayer = null;
 
     this.timerEvents = [];
@@ -37,6 +38,7 @@
     this.bestScoreTxt = 0;
     this.finalResult = null;
     this.ended = false;
+    this.scoreAdded = false;
 
     this.soundHurtPlayed = false;
   }
@@ -170,6 +172,7 @@
       this.firstFrameTouched = false;
       this.soundHurtPlayed = false;
       this.scoreCounter = 0;
+      this.scoreAdded = false;
 
       // this.btnPlay.kill();
       // this.btnScore.kill();
@@ -184,6 +187,22 @@
     },
 
     scoreGame: function(){
+      Clay.ready( function() {
+        var leaderboard = new Clay.Leaderboard( { id: 2853 } );
+        leaderboard.show();
+      } );
+    },
+
+    submitScore: function(){
+      if(!this.scoreAdded){
+        this.scoreAdded = true;
+        var bestScore = this.bestScore;
+
+        Clay.ready( function() {
+          var leaderboard = new Clay.Leaderboard( { id: 2853 } );
+          leaderboard.post( {score: bestScore } );
+        });
+      }
     },
 
     pauseGame: function(){
@@ -191,8 +210,27 @@
     },
 
     fadeButtons: function(){
+
+      this.btnPlay = this.add.button(34, this.game.height - 132, 'play', this.playGame, this, 1, 0);
+      this.btnPlay.alpha = 0;
+
+      this.btnScore = this.add.button(160, this.game.height - 132, 'score', this.scoreGame, this, 1, 0);
+      this.btnScore.alpha = 0;
+
+      this.btnSubmit = this.add.button(this.game.width / 2 - 110, this.game.height / 2 + 48, 'submit', this.submitScore, this, 1, 0);
+      this.btnSubmit.alpha = 0;
+
+      this.finalResult = this.add.sprite(this.game.width / 2 - 110, this.game.height / 2 - 50, 'finalResult');
+      this.finalResult.alpha = 0;
+
+      this.btnsLayer.add(this.btnPlay);
+      this.btnsLayer.add(this.btnScore);
+      this.btnsLayer.add(this.btnSubmit);
+      this.btnsLayer.add(this.finalResult);
+
       this.add.tween(this.btnPlay).to( { alpha: 1 }, 200, Phaser.Easing.Linear.None, true);
       this.add.tween(this.btnScore).to( { alpha: 1 }, 200, Phaser.Easing.Linear.None, true);
+      this.add.tween(this.btnSubmit).to( { alpha: 1 }, 200, Phaser.Easing.Linear.None, true);
       this.add.tween(this.finalResult).to( { alpha: 1 }, 200, Phaser.Easing.Linear.None, true);
 
       this.add.tween(this.scoreTxt).to( {  x : this.game.width / 2 - 55, y: this.game.height / 2}, 200, Phaser.Easing.Linear.None, true);
@@ -210,20 +248,9 @@
         }
         if(this.scoreCounter > this.bestScore){
           this.bestScore = this.scoreCounter;
-          this.createEntry();
         }
         this.game.input.onDown.remove(this.onInputDown, this);
 
-        this.btnPlay = this.add.button(34, this.game.height - 132, 'play', this.playGame, this);
-        this.btnPlay.alpha = 0;
-        this.btnScore = this.add.button(160, this.game.height - 132, 'score', this.scoreGame, this);
-        this.btnScore.alpha = 0;
-        this.finalResult = this.add.sprite(this.game.width / 2 - 110, this.game.height / 2 - 50, 'finalResult');
-        this.finalResult.alpha = 0;
-
-        this.btnsLayer.add(this.btnPlay);
-        this.btnsLayer.add(this.btnScore);
-        this.btnsLayer.add(this.finalResult);
 
         this.game.time.events.remove(this.timerEvents[0]);
         this.game.time.events.remove(this.timerEvents[1]);
@@ -231,12 +258,11 @@
         if(!this.firstFrameTouched){
           // this.overlay.style.display = 'block';
           this.firstFrameTouched = true;
-          this.time.events.add(Phaser.Timer.SECOND / 2, this.fadeButtons, this);
+          this.time.events.add(Phaser.Timer.SECOND, this.fadeButtons, this);
         }
         this.collision = true;
       }
-    },
-
+    }
   };
   window[''] = window[''] || {};
   window[''].Game = Game;

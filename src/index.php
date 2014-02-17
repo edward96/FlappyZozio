@@ -1,13 +1,4 @@
-<?php
-
-include_once 'connexion.php';
-
-$stmt = $pdo->prepare("SELECT * FROM flappyZozio ORDER BY score DESC LIMIT 5 ");
-$stmt->execute();
-
-$rows = $stmt->fetchAll(PDO::FETCH_OBJ);
-
-?><!doctype html>
+<!doctype html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -70,6 +61,20 @@ $rows = $stmt->fetchAll(PDO::FETCH_OBJ);
       margin: 15px auto;
     }
   </style>
+  <script type="text/javascript">
+    var Clay = Clay || {};
+    Clay.gameKey = "flappyZozio";
+    Clay.options = { debug: true };
+    Clay.readyFunctions = [];
+    Clay.ready = function( fn ) {
+        Clay.readyFunctions.push( fn );
+    };
+    ( function() {
+        var clay = document.createElement("script"); clay.async = true;
+        clay.src = ( "https:" == document.location.protocol ? "https://" : "http://" ) + "clay.io/api/api.js"; 
+        var tag = document.getElementsByTagName("script")[0]; tag.parentNode.insertBefore(clay, tag);
+    } )();
+  </script>
 </head>
 
 <body>
@@ -83,26 +88,14 @@ $rows = $stmt->fetchAll(PDO::FETCH_OBJ);
       <a href="#" id="submitEntry">Submit</a>
     </div>
     <div id="game"></div>
-    <div id="scores">
-      <h2>Scores</h2>
-      <ol>
-        <?php foreach ($rows as $row): ?>
-        <li>
-          <h3><?php echo $row->name; ?></h3>
-          <p><?php echo $row->score; ?> points</p>
-        </li>
-        <?php endforeach ?>
-      </ol>
-    </div>
   </div>
 
-  <!-- build:js main.min.js -->
   <script src="js/lib/phaser.js"></script>
   <script src="js/boot.js"></script>
   <script src="js/preloader.js"></script>
   <script src="js/menu.js"></script>
   <script src="js/game.js"></script>
   <script src="js/main.js"></script>
-  <!-- /build -->
+  
 </body>
 </html>
