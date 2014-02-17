@@ -9,7 +9,7 @@
   Preloader.prototype = {
 
     preload: function () {
-      this.asset = this.add.sprite(320, 240, 'preloader');
+      this.asset = this.add.sprite(160, this.game.height / 2, 'preloader');
       this.asset.anchor.setTo(0.5, 0.5);
 
       this.load.onLoadComplete.addOnce(this.onLoadComplete, this);

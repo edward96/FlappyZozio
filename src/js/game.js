@@ -153,8 +153,6 @@
     },
 
     playGame: function(){
-
-      document.getElementById('top').style.display = 'none';
       this.btnPlay.kill();
       this.btnScore.kill();
 
@@ -196,11 +194,24 @@
     submitScore: function(){
       if(!this.scoreAdded){
         this.scoreAdded = true;
-        var bestScore = this.bestScore;
-
+        var bestScore = this.bestScore,
+            jwt = null;
+        
         Clay.ready( function() {
+
+          var xhr = new XMLHttpRequest();
+          xhr.open('POST', 'encrypt.php', true);
+          xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+          xhr.onload = function(){
+            if (this.status === 200) {
+              jwt = this.response;
+              console.log(this);
+            }
+          };
+          xhr.send('score=' + bestScore + '&id=' + Clay.Player.identifier);
+
           var leaderboard = new Clay.Leaderboard( { id: 2853 } );
-          leaderboard.post( {score: bestScore } );
+          leaderboard.post( {jwt: jwt } );
         });
       }
     },
@@ -256,7 +267,6 @@
         this.game.time.events.remove(this.timerEvents[1]);
 
         if(!this.firstFrameTouched){
-          // this.overlay.style.display = 'block';
           this.firstFrameTouched = true;
           this.time.events.add(Phaser.Timer.SECOND, this.fadeButtons, this);
         }

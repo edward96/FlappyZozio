@@ -1,4 +1,6 @@
 .DS_Store
 *.db
 node_modules/
-src/connexion.php
+src/JWT.php
+src/secret.php
+src/encrypt.php
