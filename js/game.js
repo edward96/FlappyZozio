@@ -194,24 +194,11 @@
     submitScore: function(){
       if(!this.scoreAdded){
         this.scoreAdded = true;
-        var bestScore = this.bestScore,
-            jwt = null;
+        var bestScore = this.bestScore;
         
         Clay.ready( function() {
-
-          var xhr = new XMLHttpRequest();
-          xhr.open('POST', 'encrypt.php', true);
-          xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-          xhr.onload = function(){
-            if (this.status === 200) {
-              jwt = this.response;
-              console.log(this);
-            }
-          };
-          xhr.send('score=' + bestScore + '&id=' + Clay.Player.identifier);
-
           var leaderboard = new Clay.Leaderboard( { id: 2853 } );
-          leaderboard.post( {jwt: jwt } );
+          leaderboard.post( {score: bestScore } );
         });
       }
     },

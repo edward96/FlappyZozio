@@ -1,6 +1,0 @@
-.DS_Store
-*.db
-node_modules/
-src/JWT.php
-src/secret.php
-src/encrypt.php
