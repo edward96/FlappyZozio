@@ -2,15 +2,7 @@
   'use strict';
 
   function Game() {
-    this.player = null;
-    this.bg = null;
-    this.gravity = 5;
-    this.velocity = 0;
-    this.tilesprite = null;
-
-    this.tube = null;
     this.tubeHeight = 300;
-    this.tubeTab = [];
 
     /* MAGIC VALUES ALMOST VERY GOOD FEELING */
     this.jumpDuration = 38;
@@ -18,25 +10,12 @@
     this.spaceBetweenTubes = 55;
     this.secondsBetweenTubes = 2.5;
 
-    this.frontLayer = null;
-    this.tubeLayer = null;
-    this.collision = null;
-
     this.firstFrameTouched = false;
     this.paused = false;
 
-    this.btnPlay = null;
-    this.btnScore = null;
-    this.btnPause = null;
-    this.btnSubmit = null;
-    this.btnsLayer = null;
-
-    this.timerEvents = [];
-    this.scoreTxt = null;
     this.scoreCounter = 0;
     this.bestScore = 0;
     this.bestScoreTxt = 0;
-    this.finalResult = null;
     this.ended = false;
     this.scoreAdded = false;
 
@@ -46,17 +25,30 @@
   Game.prototype = {
 
     create: function () {
+      this.physics.startSystem(Phaser.Physics.ARCADE);
       this.stage.backgroundColor = '#53bece';
+
       this.gravity = 5;
-      this.scoreTxt = this.add.bitmapText(this.game.width / 2, 10, '' + this.scoreCounter, {font: '20px minecraftia', align: 'center'});
+      this.velocity = 0;
+      this.collision = false;
+      this.firstFrameTouched = false;
+      this.soundHurtPlayed = false;
+      this.scoreCounter = 0;
+      this.scoreAdded = false;
+      this.ended = false;
+
+      this.scoreTxt = this.add.bitmapText(this.game.width / 2, 10,'minecraftia', '' + this.scoreCounter, 20);
 
       this.player = this.add.sprite(50,50,'flappy');
+      this.physics.enable(this.player, Phaser.Physics.ARCADE);
+
       this.tilesprite = this.add.tileSprite(0, this.game.height - 50, this.game.width, 50, 'tile');
       this.bg = this.add.sprite(0, this.game.height - 50 - 100, 'bg');
 
-      this.btnPause = this.add.button(10, 10, 'pause', this.pauseGame, this);
-
       this.tubeLayer = this.add.group();
+      this.tubeLayer.enableBody = true;
+      this.tubeLayer.physicsBodyType = Phaser.Physics.ARCADE;
+
       this.btnsLayer = this.add.group();
       this.frontLayer = this.add.group();
       
@@ -64,8 +56,7 @@
       this.frontLayer.add(this.scoreTxt);
       this.frontLayer.add(this.player);
 
-      this.btnsLayer.add(this.btnPause);
-
+      this.timerEvents = [];
       this.timerEvents[0] = this.game.time.events.loop(Phaser.Timer.SECOND * this.secondsBetweenTubes / 2, this.createTube, this);
       this.timerEvents[1] = this.game.time.events.loop(Phaser.Timer.SECOND, this.removeTubes, this);
 
@@ -73,10 +64,6 @@
     },
 
     update: function () {
-      if(this.firstFrameTouched){
-        // this.overlay.style.display = 'none';
-      }
-
       this.gravity += 0.05;
 
       if(this.velocity > 0){
@@ -86,13 +73,13 @@
       }
 
       if(!this.collision){
-        for (var i = 0, il = this.tubeTab.length; i < il; i++) {
-          this.tubeTab[i].body.x -= this.game.width * this.time.elapsed / ( 1000 * this.secondsBetweenTubes );
-          if(this.player.body.x > this.tubeTab[i].body.x && this.player.body.x + this.player.body.width <= this.tubeTab[i].body.x + this.tubeTab[i].body.width ){
-            if(this.tubeTab[i].passed !== undefined){
-              if(!this.tubeTab[i].passed){
+        for (var i = 0, il = this.tubeLayer.children.length; i < il; i++) {
+          this.tubeLayer.children[i].body.x -= this.game.width * this.time.elapsed / ( 1000 * this.secondsBetweenTubes );
+          if(this.player.body.x > this.tubeLayer.children[i].body.x && this.player.body.x + this.player.body.width <= this.tubeLayer.children[i].body.x + this.tubeLayer.children[i].body.width ){
+            if(this.tubeLayer.children[i].passed !== undefined){
+              if(!this.tubeLayer.children[i].passed){
                 this.addScore();
-                this.tubeTab[i].passed = true;
+                this.tubeLayer.children[i].passed = true;
               }
             }
           }
@@ -104,7 +91,7 @@
       this.frontLayer.bringToTop(this.tilesprite);
       this.frontLayer.bringToTop(this.scoreTxt);
 
-      this.physics.overlap(this.player, this.tubeLayer, this.endGame, null, this);
+      this.physics.arcade.overlap(this.player, this.tubeLayer, this.endGame, null, this);
       if(this.player.body.y <= 0){
         this.player.body.y = 1;
       }
@@ -132,22 +119,17 @@
 
       this.tubeLayer.add(tube1);
       this.tubeLayer.add(tube2);
-
-      this.tubeTab.push(tube1);
-      this.tubeTab.push(tube2);
     },
 
     removeTubes: function(){
-      if(this.tubeTab.length){
-        if(this.tubeTab[0].body.x < -54 ){
-          this.tubeTab[0].kill();
-          this.tubeLayer.remove(this.tubeTab[0]);
-          this.tubeTab.splice(0, 1);
-        }
-        if(this.tubeTab[1].body.x < -54){
-          this.tubeTab[1].kill();
-          this.tubeLayer.remove(this.tubeTab[1]);
-          this.tubeTab.splice(1, 1);
+      if(this.tubeLayer.children.length){
+        if(this.tubeLayer.children[0].body.x < -54 ){
+
+          this.tubeLayer.children[0].kill();
+          this.tubeLayer.remove(this.tubeLayer.children[0]);
+
+          this.tubeLayer.children[0].kill();
+          this.tubeLayer.remove(this.tubeLayer.children[0]);
         }
       }
     },
@@ -155,26 +137,12 @@
     playGame: function(){
       this.btnPlay.kill();
       this.btnScore.kill();
+      this.btnSubmit.kill();
 
       this.btnsLayer.removeAll();
+      this.tubeLayer.removeAll();
 
-      for (var i = 0, il = this.tubeTab.length; i < il; i++) {
-        this.tubeTab[i].kill();
-        this.tubeLayer.remove(this.tubeTab[i]);
-      }
-
-      this.tubeTab = [];
       this.tubeLayer = this.game.add.group();
-
-      this.collision = false;
-      this.firstFrameTouched = false;
-      this.soundHurtPlayed = false;
-      this.scoreCounter = 0;
-      this.scoreAdded = false;
-
-      // this.btnPlay.kill();
-      // this.btnScore.kill();
-      this.ended = false;
       this.game.state.start('game');
     },
 
@@ -203,10 +171,6 @@
       }
     },
 
-    pauseGame: function(){
-      this.game.paused = (this.paused) ? false : true ;
-    },
-
     fadeButtons: function(){
 
       this.btnPlay = this.add.button(34, this.game.height - 132, 'play', this.playGame, this, 1, 0);
@@ -232,7 +196,7 @@
       this.add.tween(this.finalResult).to( { alpha: 1 }, 200, Phaser.Easing.Linear.None, true);
 
       this.add.tween(this.scoreTxt).to( {  x : this.game.width / 2 - 55, y: this.game.height / 2}, 200, Phaser.Easing.Linear.None, true);
-      this.bestScoreTxt = this.add.bitmapText(this.game.width / 2 + 35, this.game.height / 2, '' + this.bestScore, {font: '20px minecraftia', align: 'center'});
+      this.bestScoreTxt = this.add.bitmapText(this.game.width / 2 + 35, this.game.height / 2, 'minecraftia', + this.bestScore, 20);
 
       this.frontLayer.add(this.bestScoreTxt);
     },

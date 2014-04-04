@@ -19,9 +19,9 @@
       this.tilesprite = this.add.tileSprite(0, this.game.height - 50, this.game.width, 50, 'tile');
       this.bg = this.add.sprite(0, this.game.height - 50 - 100, 'bg');
 
-      this.titleTxt = this.add.bitmapText(x - 20, y - 15, 'Flappy Zozio', {font: '25px minecraftia', align: 'left'});
-      this.titleTxt = this.add.bitmapText(20, y + 60, 'Click / Tap to make the bird fly', {font: '14px minecraftia', align: 'center'});
-      this.titleTxt = this.add.bitmapText(x, y + 90, 'Dodge the pipes', {font: '14px minecraftia', align: 'center'});
+      this.titleTxt = this.add.bitmapText(x - 20, y - 15, 'minecraftia', 'Flappy Zozio', 25);
+      this.titleTxt = this.add.bitmapText(20, y + 60, 'minecraftia', 'Click / Tap to make the bird fly', 14);
+      this.titleTxt = this.add.bitmapText(x, y + 90, 'minecraftia', 'Dodge the pipes', 14);
 
       this.input.onDown.add(this.onDown, this);
     },
